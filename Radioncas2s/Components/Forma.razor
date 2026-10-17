@@ -1,0 +1,175 @@
+﻿@using Radioncas2s.Models
+@using Radioncas2s.Models.Utils
+@using Radioncas2s.Servisi
+@inject NavigationManager NavManager
+@inject IJSRuntime JS
+
+<p class="auth-title">
+    @(statusPrijave == StatusPrijave.Prijava ? "Prijavi se!" : "Registruj se")
+    
+</p>
+<label class="auth-label">Korisnicko ime</label>
+<input class="player-input auth-input" type="text" @bind="Ime" @bind:event="oninput" />
+
+<label class="auth-label">Loznka</label>
+<input class="player-input auth-input" type="password" @bind="Lozinka" @bind:event="oninput"/>
+
+<button class="auth-button"
+    @onclick="@(statusPrijave == StatusPrijave.Prijava ? Prijava : Registracija)">
+    @(statusPrijave == StatusPrijave.Prijava ? "Prijavi se" : "Registruj se")
+</button>
+<button class="auth-button" @onclick ="PromeniStatusPrijave">@(statusPrijave == StatusPrijave.Prijava ? "Registruj se" : "Prijavi se")</button>
+
+@code {
+    StatusPrijave statusPrijave = StatusPrijave.Prijava;
+    string Ime;
+    string Lozinka;
+
+    BazaServis bazaServis = new BazaServis();
+
+    void PromeniStatusPrijave()
+    {
+        if(statusPrijave == StatusPrijave.Prijava)
+        {
+            statusPrijave = StatusPrijave.Registracija;
+        }
+        else
+        {
+            statusPrijave = StatusPrijave.Prijava;
+        }
+    }
+
+    private void Registracija()
+    {
+        Igrac i = new Igrac
+            {
+                Nadimak = Ime,
+                Lozinka = Lozinka
+            };
+
+        bazaServis.DodajIgraca(i);
+    }
+
+
+    private void Prijava()
+    {
+        Igrac i = new Igrac
+        {
+            Nadimak = Ime,
+            Lozinka = Lozinka
+        };
+
+        try
+        {
+            Igrac? prijavljeniIgrac = bazaServis.PrijaviIgraca(i);
+            if(prijavljeniIgrac != null)
+            {
+                NavManager.NavigateTo("/proba");
+            }
+            else
+            {
+                Console.WriteLine("Ne postoji korisnik sa ovim kredencijalima");
+            }
+        }
+        catch
+        {
+            
+            Console.WriteLine("Ne postoji korisnik sa ovim kredencijalima");
+        }
+
+
+    }
+}
+
+
+<style>
+
+    .auth-title {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 22px;
+        color: #F5E6C8;
+        text-align: center;
+        text-shadow: 3px 3px 0 #2B1B0F;
+        margin: 35px 0;
+    }
+
+    .auth-label {
+        display: block;
+        margin: 22px 0 10px;
+        color: #EAF2F8;
+        font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .auth-input {
+        display: block;
+        width: 320px;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 20px;
+        font-size: 14px;
+    }
+
+        .auth-input::placeholder {
+            color: #B8C9D8;
+            font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+            font-size: 15px;
+        }
+
+        .auth-input:focus {
+            border-color: #F7D65C;
+            box-shadow: 0 0 18px rgba(247, 214, 92, .4);
+        }
+
+    .auth-button,
+    .auth-switch {
+        display: block;
+        width: 320px;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 25px auto 0;
+        padding: 15px 12px;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 11px;
+        line-height: 1.8;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .auth-button {
+        background: #8B5A2B;
+        color: white;
+        border: 2px solid #D4AF37;
+        box-shadow: 0 4px 0 #4A301B;
+    }
+
+        .auth-button:hover {
+            background: #6E4420;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, .3);
+        }
+
+        .auth-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #4A301B;
+        }
+
+    .auth-switch {
+        margin-top: 16px;
+        background: #24496D;
+        color: #F5E6C8;
+        border: 2px solid #B0BEC5;
+    }
+
+        .auth-switch:hover {
+            background: #315D83;
+            border-color: #F7D65C;
+            transform: translateY(-2px);
+        }
+
+    
+</style>
+
