@@ -40,7 +40,7 @@
         }
     }
 
-    private async Task Registracija()
+    private async void Registracija()
     {
         Igrac i = new Igrac
             {
@@ -49,10 +49,19 @@
             };
 
         Igrac? igrac = await Komunikacija.RegistracijaIgraca(i);
+        if(igrac == null)
+        {
+            await JS.InvokeVoidAsync("alert", "Niste se uspesno registrovali");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Registracija uspela");
+        }
     }
 
 
-    private void Prijava()
+
+    private async void Prijava()
     {
         Igrac i = new Igrac
         {
@@ -62,10 +71,10 @@
 
         try
         {
-            Igrac? prijavljeniIgrac = bazaServis.PrijaviIgraca(i);
+            Igrac? prijavljeniIgrac = await Komunikacija.PrijaviIgraca(i);
             if(prijavljeniIgrac != null)
             {
-                NavManager.NavigateTo("/proba");
+                NavManager.NavigateTo("/lobby");
             }
             else
             {

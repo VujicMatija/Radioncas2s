@@ -25,6 +25,7 @@ namespace Radioncas2s
 
             builder.Services.AddScoped<BazaServis>();
             builder.Services.AddScoped<Komunikacija>();
+            builder.Services.AddSingleton<SobaServis>();
 
             var app = builder.Build();
 
