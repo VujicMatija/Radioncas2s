@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.ResponseCompression;
 using Radioncas2s.Components;
+using Radioncas2s.Hubs;
 using Radioncas2s.Servisi;
 
 namespace Radioncas2s
@@ -13,7 +15,16 @@ namespace Radioncas2s
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddSignalR();
+            builder.Services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+
+
             builder.Services.AddScoped<BazaServis>();
+            builder.Services.AddScoped<Komunikacija>();
 
             var app = builder.Build();
 
@@ -29,6 +40,8 @@ namespace Radioncas2s
             app.UseHttpsRedirection();
 
             app.UseAntiforgery();
+
+            app.MapHub<GameHub>("/gamehub");
 
             app.MapStaticAssets();
             app.MapRazorComponents<App>()

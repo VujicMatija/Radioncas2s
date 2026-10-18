@@ -7,6 +7,8 @@ namespace Radioncas2s.Models
         public string Nadimak { get; set; }
         public string Lozinka { get; set; }
 
+        public string ConnectionID { get; set; }
+
         public string NazivTabele => "Igrac";
 
         public string Vrednosti => $"'{Nadimak}', '{Lozinka}'";

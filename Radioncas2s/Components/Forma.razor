@@ -3,6 +3,7 @@
 @using Radioncas2s.Servisi
 @inject NavigationManager NavManager
 @inject IJSRuntime JS
+@inject Komunikacija Komunikacija
 
 <p class="auth-title">
     @(statusPrijave == StatusPrijave.Prijava ? "Prijavi se!" : "Registruj se")
@@ -25,7 +26,7 @@
     string Ime;
     string Lozinka;
 
-    BazaServis bazaServis = new BazaServis();
+
 
     void PromeniStatusPrijave()
     {
@@ -39,7 +40,7 @@
         }
     }
 
-    private void Registracija()
+    private async Task Registracija()
     {
         Igrac i = new Igrac
             {
@@ -47,7 +48,7 @@
                 Lozinka = Lozinka
             };
 
-        bazaServis.DodajIgraca(i);
+        Igrac? igrac = await Komunikacija.RegistracijaIgraca(i);
     }
 
 
